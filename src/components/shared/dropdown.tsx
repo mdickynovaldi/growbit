@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export default function Dropdown() {
+export function Dropdown() {
   const handleEdit = () => {
     console.log("Edit clicked");
   };

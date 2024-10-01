@@ -16,7 +16,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 
-export default function CalorieTracker() {
+export function ExerciseCalorieTracker() {
   const [name, setName] = useState("");
   const [calories, setCalories] = useState(0);
 

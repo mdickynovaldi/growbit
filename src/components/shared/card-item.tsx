@@ -1,16 +1,16 @@
-import { Button } from "./button";
-import { Card, CardHeader } from "./card";
-import Dropdown from "./dropdown";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader } from "@/components/ui/card";
+import { Dropdown } from "@/components/shared/dropdown";
 
-export function CardItem({
+export function ExerciseCardItem({
   title,
   calories,
 }: {
   title: string;
-  calories: string;
+  calories: number;
 }) {
   return (
-    <Card className="my-10 bg-slate-700 transition-transform transform hover:scale-105">
+    <Card className="my-10 transition-transform transform hover:scale-105">
       <CardHeader>
         <div className="flex justify-between items-center my-2">
           <h1 className="text-white text-2xl font-bold">{title}</h1>
