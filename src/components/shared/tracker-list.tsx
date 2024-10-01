@@ -45,6 +45,12 @@ export function TrackerList() {
     setProgressValue(newProgressValue);
   }
 
+  // @ts-ignore
+  function handleSubmitExercise() {
+    // TODO: Handle submit exercise
+    // addExercise()
+  }
+
   return (
     <section id="opening" className="px-4 md:px-8 lg:px-16">
       <h1 className="text-white text-3xl text-center font-semibold">
