@@ -29,16 +29,18 @@ export function ExerciseCalorieTracker() {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label className="text-white" htmlFor="name">
-            Name
-          </Label>
-          <Input
-            id="name"
-            placeholder="Enter your name"
-            value={name}
-            className="text-white rounded"
-            onChange={(e) => setName(e.target.value)}
-          />
+          <form>
+            <Label className="text-white" htmlFor="exercise-name">
+              Exercise
+            </Label>
+            <Input
+              id="exercise-name"
+              placeholder="What exercise do you want to do today?"
+              value={name}
+              className="text-white rounded"
+              onChange={(e) => setName(e.target.value)}
+            />
+          </form>
         </div>
         <Drawer>
           <DrawerTrigger asChild>

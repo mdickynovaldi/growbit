@@ -1,6 +1,5 @@
 import { TrackerList } from "@/components/shared/tracker-list";
 import { Header } from "@/components/layout/header";
-import { ExerciseCalorieTracker } from "@/components/ui/exercise-calorie-tracker";
 
 export function App() {
   return (
@@ -8,8 +7,6 @@ export function App() {
       <Header />
 
       <TrackerList />
-
-      <ExerciseCalorieTracker />
     </main>
   );
 }
