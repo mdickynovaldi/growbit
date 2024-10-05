@@ -101,7 +101,7 @@ export function TrackerList() {
               <Input
                 id="exercise-calories"
                 type="number"
-                placeholder="Berapa kalori yang ingin Anda bakar?"
+                placeholder="How many calories do you want to burn?"
                 className="text-white rounded mt-2 mb-4"
               />
               <Button type="submit">Add</Button>
