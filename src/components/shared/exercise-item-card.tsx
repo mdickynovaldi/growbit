@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Dropdown } from "@/components/shared/dropdown";
 
-export function ExerciseCardItem({
+export function ExerciseItemCard({
   title,
   calories,
 }: {

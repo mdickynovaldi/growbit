@@ -4,7 +4,7 @@ import { nanoid } from "nanoid";
 import { Button } from "@/components/ui/button";
 import { calculateProgressValue } from "@/modules/exercise/progress";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { ExerciseCardItem } from "@/components/shared/ExerciseCardItem";
+import { ExerciseItemCard } from "@/components/shared/exercise-item-card";
 import { ExerciseItem } from "@/modules/exercise/types";
 import { initialExerciseItems } from "@/modules/exercise/data";
 import { Input } from "@/components/ui/input";
@@ -103,7 +103,7 @@ export function TrackerList() {
       <div id="cardItem" className="my-20">
         {exerciseItems.map((exerciseItem) => {
           return (
-            <ExerciseCardItem
+            <ExerciseItemCard
               key={nanoid()}
               title={exerciseItem.title}
               calories={exerciseItem.calories}
