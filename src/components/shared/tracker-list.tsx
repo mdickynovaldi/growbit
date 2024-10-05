@@ -17,8 +17,7 @@ type ExerciseItem = {
 const initialExerciseItems: ExerciseItem[] = [];
 
 export function TrackerList() {
-  const [exerciseItems, setExerciseItems] =
-    useState<ExerciseItem[]>(initialExerciseItems);
+  const [exerciseItems, setExerciseItems] = useState<ExerciseItem[]>([]);
 
   const [progressValue, setProgressValue] = useState(
     calculateProgressValue(initialExerciseItems)
@@ -26,7 +25,6 @@ export function TrackerList() {
 
   function calculateProgressValue(exerciseItems: ExerciseItem[]) {
     const totalCalories = exerciseItems.reduce((sum, item) => {
-      console.log("ExerciseItem:", item);
       return sum + item.calories;
     }, 0);
     return totalCalories / 10;
@@ -56,7 +54,7 @@ export function TrackerList() {
     ) as HTMLInputElement;
 
     const exerciseName = exerciseNameInput.value;
-    const exerciseCalories = parseInt(exerciseCaloriesInput.value, 10);
+    const exerciseCalories = parseInt(exerciseCaloriesInput.value);
 
     if (exerciseName && !isNaN(exerciseCalories)) {
       addExercise({
@@ -69,21 +67,7 @@ export function TrackerList() {
       exerciseCaloriesInput.value = "";
     } else {
       alert("Mohon masukkan nama latihan dan jumlah kalori yang valid.");
-
-      const updatedProgressValue = calculateProgressValue([
-        ...exerciseItems,
-        { title: exerciseName, calories: exerciseCalories, id: nanoid() },
-      ]);
-
-      setProgressValue(updatedProgressValue);
     }
-
-    const updatedProgressValue = calculateProgressValue([
-      ...exerciseItems,
-      { title: exerciseName, calories: exerciseCalories, id: nanoid() },
-    ]);
-
-    setProgressValue(updatedProgressValue);
   }
 
   return (
