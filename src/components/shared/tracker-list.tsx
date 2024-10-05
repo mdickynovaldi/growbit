@@ -1,34 +1,25 @@
 import { useState } from "react";
-
-import { Progress } from "@/components/ui/progress";
-import { ExerciseCardItem } from "@/components/shared/ExerciseCardItem";
-import { Button } from "@/components/ui/button";
-import { Label } from "@radix-ui/react-dropdown-menu";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { nanoid } from "nanoid";
 
-type ExerciseItem = {
-  id: string;
-  title: string;
-  calories: number;
-};
+import { Button } from "@/components/ui/button";
+import { calculateProgressValue } from "@/modules/exercise/progress";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { ExerciseCardItem } from "@/components/shared/ExerciseCardItem";
+import { ExerciseItem } from "@/modules/exercise/types";
+import { initialExerciseItems } from "@/modules/exercise/data";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
 
-const initialExerciseItems: ExerciseItem[] = [];
-
+/**
+ * Component
+ */
 export function TrackerList() {
   const [exerciseItems, setExerciseItems] = useState<ExerciseItem[]>([]);
 
   const [progressValue, setProgressValue] = useState(
     calculateProgressValue(initialExerciseItems)
   );
-
-  function calculateProgressValue(exerciseItems: ExerciseItem[]) {
-    const totalCalories = exerciseItems.reduce((sum, item) => {
-      return sum + item.calories;
-    }, 0);
-    return totalCalories / 10;
-  }
 
   function addExercise(addExerciseItem: ExerciseItem) {
     const newExerciseItem = {
@@ -46,28 +37,21 @@ export function TrackerList() {
   function handleSubmitExercise(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const exerciseNameInput = document.getElementById(
-      "exercise-name"
-    ) as HTMLInputElement;
-    const exerciseCaloriesInput = document.getElementById(
-      "exercise-calories"
-    ) as HTMLInputElement;
+    const formData = new FormData(event.currentTarget);
 
-    const exerciseName = exerciseNameInput.value;
-    const exerciseCalories = parseInt(exerciseCaloriesInput.value);
-
-    if (exerciseName && !isNaN(exerciseCalories)) {
-      addExercise({
-        title: exerciseName,
-        calories: exerciseCalories,
-        id: nanoid(),
-      });
-
-      exerciseNameInput.value = "";
-      exerciseCaloriesInput.value = "";
-    } else {
-      alert("Mohon masukkan nama latihan dan jumlah kalori yang valid.");
+    let exerciseCalories = Number(formData.get("exercise-calories"));
+    if (exerciseCalories <= 0) {
+      exerciseCalories = 0;
     }
+
+    const newExerciseItem = {
+      id: nanoid(),
+      title: String(formData.get("exercise-name")),
+      calories: exerciseCalories,
+    };
+
+    addExercise(newExerciseItem);
+    event.currentTarget.reset();
   }
 
   return (
@@ -91,15 +75,21 @@ export function TrackerList() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <form onSubmit={handleSubmitExercise}>
-              <Label className="text-white">Exercise</Label>
+              <Label htmlFor="exercise-name" className="text-white">
+                Exercise
+              </Label>
               <Input
                 id="exercise-name"
+                name="exercise-name"
                 placeholder="What exercise do you want to do today?"
                 className="text-white rounded"
               />
-              <Label className="text-white mt-4">Kalori</Label>
+              <Label htmlFor="exercise-calories" className="text-white mt-4">
+                Calorie
+              </Label>
               <Input
                 id="exercise-calories"
+                name="exercise-calories"
                 type="number"
                 placeholder="How many calories do you want to burn?"
                 className="text-white rounded mt-2 mb-4"
