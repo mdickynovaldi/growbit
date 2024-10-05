@@ -102,7 +102,7 @@ export function TrackerList() {
                 id="exercise-calories"
                 type="number"
                 placeholder="Berapa kalori yang ingin Anda bakar?"
-                className="text-white rounded mt-2"
+                className="text-white rounded mt-2 mb-4"
               />
               <Button type="submit">Add</Button>
             </form>
