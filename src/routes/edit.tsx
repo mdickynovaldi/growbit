@@ -5,44 +5,13 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ExerciseItem } from "@/modules/exercise/types";
 import { Label } from "@/components/ui/label";
-import { useEffect, useState } from "react";
-import { calculateProgressValue } from "@/modules/exercise/progress";
-import { initialExerciseItems } from "@/modules/exercise/data";
+
 import { Link, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 export function Edit() {
-  const [exerciseItems, setExerciseItems] = useState<ExerciseItem[]>([]);
-
-  const [progressValue, setProgressValue] = useState(
-    calculateProgressValue(initialExerciseItems)
-  );
-
   const { id } = useParams();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const storedItems = await localforage.getItem<ExerciseItem[]>(
-          "exerciseItems"
-        );
-        if (storedItems) {
-          const targetItem = storedItems.find((item) => item.id === id);
-          if (targetItem) {
-            setExerciseItems([targetItem]);
-            setProgressValue(calculateProgressValue([targetItem]));
-          } else {
-            console.error("Item tidak ditemukan");
-            navigate("/");
-          }
-        }
-      } catch (err) {
-        console.error("Gagal memuat data:", err);
-      }
-    };
-    loadData();
-  }, [id]);
 
   async function editItemById(id: string, updatedData: Partial<ExerciseItem>) {
     try {
@@ -57,8 +26,8 @@ export function Edit() {
 
         await localforage.setItem("exerciseItems", updatedItems);
 
-        setExerciseItems(updatedItems);
-        setProgressValue(calculateProgressValue(updatedItems));
+        // setExerciseItems(updatedItems);
+        // setProgressValue(calculateProgressValue(updatedItems));
       }
     } catch (err) {
       console.error("Failed to edit item:", err);
