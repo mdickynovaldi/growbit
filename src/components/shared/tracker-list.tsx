@@ -1,19 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
+import localforage from "localforage";
+import { useNavigate } from "react-router-dom";
 
-import { Button } from "@/components/ui/button";
 import { calculateProgressValue } from "@/modules/exercise/progress";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { ExerciseItemCard } from "@/components/shared/exercise-item-card";
 import { ExerciseItem } from "@/modules/exercise/types";
 import { initialExerciseItems } from "@/modules/exercise/data";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
-/**
- * Component
- */
 export function TrackerList() {
   const [exerciseItems, setExerciseItems] = useState<ExerciseItem[]>([]);
 
@@ -21,38 +18,44 @@ export function TrackerList() {
     calculateProgressValue(initialExerciseItems)
   );
 
-  function addExercise(addExerciseItem: ExerciseItem) {
-    const newExerciseItem = {
-      title: addExerciseItem.title,
-      calories: addExerciseItem.calories,
-      id: nanoid(),
-    };
+  const navigate = useNavigate();
 
-    const newProgressValue = progressValue + newExerciseItem.calories / 10;
-
-    setExerciseItems([...exerciseItems, newExerciseItem]);
-    setProgressValue(newProgressValue);
-  }
-
-  function handleSubmitExercise(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
-
-    let exerciseCalories = Number(formData.get("exercise-calories"));
-    if (exerciseCalories <= 0) {
-      exerciseCalories = 0;
+  async function loadData() {
+    try {
+      const storedItems = await localforage.getItem<ExerciseItem[]>(
+        "exerciseItems"
+      );
+      if (storedItems) {
+        setExerciseItems(storedItems);
+        setProgressValue(calculateProgressValue(storedItems));
+      }
+    } catch (err) {
+      console.error("Failed to load data:", err);
+      throw err;
     }
-
-    const newExerciseItem = {
-      id: nanoid(),
-      title: String(formData.get("exercise-name")),
-      calories: exerciseCalories,
-    };
-
-    addExercise(newExerciseItem);
-    event.currentTarget.reset();
   }
+
+  async function deleteItemById(id: string) {
+    try {
+      const storedItems = await localforage.getItem<ExerciseItem[]>(
+        "exerciseItems"
+      );
+
+      if (storedItems) {
+        const updatedItems = storedItems.filter((item) => item.id !== id);
+        await localforage.setItem("exerciseItems", updatedItems);
+
+        setExerciseItems(updatedItems);
+        setProgressValue(calculateProgressValue(updatedItems));
+      }
+    } catch (err) {
+      console.error("Failed to delete item:", err);
+    }
+  }
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   return (
     <section id="opening" className="px-4 md:px-8 lg:px-16">
@@ -64,41 +67,15 @@ export function TrackerList() {
         Do the habit and earn a shiny medal.
       </p>
 
-      <Progress className="bg-white h-6 rounded-full" value={progressValue} />
-
-      <Card className="w-full max-w-md mx-auto my-10 md:my-10">
-        <CardHeader>
-          <CardTitle className="text-white text-center">
-            Calorie Tracker
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <form onSubmit={handleSubmitExercise}>
-              <Label htmlFor="exercise-name" className="text-white">
-                Exercise
-              </Label>
-              <Input
-                id="exercise-name"
-                name="exercise-name"
-                placeholder="What exercise do you want to do today?"
-                className="text-white rounded"
-              />
-              <Label htmlFor="exercise-calories" className="text-white mt-4">
-                Calorie
-              </Label>
-              <Input
-                id="exercise-calories"
-                name="exercise-calories"
-                type="number"
-                placeholder="How many calories do you want to burn?"
-                className="text-white rounded mt-2 mb-4"
-              />
-              <Button type="submit">Add</Button>
-            </form>
-          </div>
-        </CardContent>
-      </Card>
+      <Progress
+        className="bg-white h-6 rounded-full mb-10"
+        value={progressValue}
+      />
+      <Link to="/new">
+        <Button className="rounded bg-green-500 hover:bg-green-600 transition-colors mx-auto block">
+          Add Exercise
+        </Button>
+      </Link>
 
       <div id="cardItem" className="my-20">
         {exerciseItems.map((exerciseItem) => {
@@ -107,6 +84,9 @@ export function TrackerList() {
               key={nanoid()}
               title={exerciseItem.title}
               calories={exerciseItem.calories}
+              onDone={() => deleteItemById(exerciseItem.id)}
+              onSkip={() => deleteItemById(exerciseItem.id)}
+              onEdit={() => navigate(`/edit/${exerciseItem.id}`)}
             />
           );
         })}
