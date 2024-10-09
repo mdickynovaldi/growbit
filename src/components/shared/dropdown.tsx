@@ -1,4 +1,6 @@
-import { MoreVertical, Edit, Trash } from "lucide-react";
+import { Link } from "react-router-dom";
+
+import { MoreVertical, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -6,16 +8,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DropdownProps } from "@/modules/exercise/types";
 
-export function Dropdown() {
-  const handleEdit = () => {
-    console.log("Edit clicked");
-  };
-
-  const handleDelete = () => {
-    console.log("Delete clicked");
-  };
-
+export function Dropdown(props: DropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,16 +20,10 @@ export function Dropdown() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className=" bg-slate-500 rounded">
-        <div className="hover:bg-gray-200 w-full rounded">
-          <DropdownMenuItem onClick={handleEdit}>
+        <div className=" w-full rounded">
+          <DropdownMenuItem>
             <Edit className="mr-2 h-4 w-4" />
-            <span>Edit</span>
-          </DropdownMenuItem>
-        </div>
-        <div className="hover:bg-gray-200 w-full rounded">
-          <DropdownMenuItem onClick={handleDelete}>
-            <Trash className="mr-2 h-4 w-4" />
-            <span>Delete</span>
+            <Link to={`/edit/${props.exerciseId}`}>Edit</Link>
           </DropdownMenuItem>
         </div>
       </DropdownMenuContent>
