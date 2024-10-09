@@ -3,7 +3,6 @@ export type ExerciseItem = {
   title: string;
   calories: number;
   createdAt: number;
-  isDone: boolean;
 };
 
 export type ExerciseItemCardProps = {

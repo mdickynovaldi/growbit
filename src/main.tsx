@@ -16,6 +16,7 @@ import { New, action as newAction } from "@/routes/new";
 import { Edit, action as editAction } from "@/routes/edit";
 import { loader as rootLoader, Root } from "@/routes/root";
 import { Home } from "@/routes/home";
+
 const router = createBrowserRouter([
   {
     path: "/",

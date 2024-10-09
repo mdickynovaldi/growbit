@@ -26,7 +26,6 @@ export async function action({
     title: formData.get("exercise-name") as string,
     calories: Number(formData.get("exercise-calories")),
     createdAt: Date.now(),
-    isDone: false,
   };
   await updateExercise(params.id, updates);
   return redirect(`/`);

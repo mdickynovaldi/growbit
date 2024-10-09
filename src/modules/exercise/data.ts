@@ -24,7 +24,6 @@ export async function createExercise(updates: ExerciseItem) {
     title: updates.title,
     calories: updates.calories,
     createdAt: updates.createdAt,
-    isDone: false,
   };
   let exercises = await getExercises();
   exercises.unshift(exercise);
