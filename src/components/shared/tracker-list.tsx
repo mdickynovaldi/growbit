@@ -12,6 +12,9 @@ import { nanoid } from "nanoid";
 export function TrackerList() {
   const { exercises } = useLoaderData() as { exercises: ExerciseItem[] };
   const { totalCalories } = useLoaderData() as { totalCalories: number };
+
+  const isGoalAchieved = totalCalories >= 100; // Menentukan apakah goal tercapai
+
   return (
     <section
       id="opening"
@@ -30,10 +33,22 @@ export function TrackerList() {
         value={totalCalories}
       />
 
+      {isGoalAchieved && (
+        <p className="text-green-500 text-center mt-4">
+          Congratulations! You have achieved your goal!
+        </p>
+      )}
+
       <div className="flex justify-center mt-8 sm:mt-10">
-        <Link to="/new">
-          <Button className="w-full sm:w-auto">Add</Button>
-        </Link>
+        {isGoalAchieved ? (
+          <Button className="w-full sm:w-auto" disabled>
+            Add
+          </Button>
+        ) : (
+          <Link to="/new">
+            <Button className="w-full sm:w-auto">Add</Button>
+          </Link>
+        )}
       </div>
 
       <div id="cardItem" className="my-12 sm:my-16 md:my-20">

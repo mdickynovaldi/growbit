@@ -11,10 +11,16 @@ import { Button } from "@/components/ui/button";
 
 export async function action({ request }: { request: Request }) {
   const formData = await request.formData();
+  let calories = Number(formData.get("exercise-calories"));
+  if (calories > 1000) {
+    calories = 1000;
+  } else if (calories < 0) {
+    calories = 0;
+  }
   const updates: ExerciseItem = {
     id: nanoid(),
     title: formData.get("exercise-name") as string,
-    calories: Number(formData.get("exercise-calories")),
+    calories: calories,
     createdAt: Date.now(),
   };
   await createExercise(updates);

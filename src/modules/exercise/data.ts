@@ -12,8 +12,9 @@ export async function getExercises() {
 
 export async function getCalories() {
   await fakeNetwork();
-  let calories = (await localforage.getItem("calories")) || 0;
-  return Number(calories) / 10;
+  let calories: number = (await localforage.getItem("calories")) || 0;
+  let totalCalories = calories / 10;
+  return totalCalories;
 }
 
 export async function createExercise(updates: ExerciseItem) {
