@@ -13,7 +13,7 @@ export function TrackerList() {
   const { exercises } = useLoaderData() as { exercises: ExerciseItem[] };
   const { totalCalories } = useLoaderData() as { totalCalories: number };
 
-  const isGoalAchieved = totalCalories >= 100; // Menentukan apakah goal tercapai
+  const isGoalAchieved = totalCalories >= 100;
 
   return (
     <section
