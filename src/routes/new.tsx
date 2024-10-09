@@ -1,4 +1,5 @@
 import { Form, Link, redirect, useNavigation } from "react-router-dom";
+import { nanoid } from "nanoid";
 
 import { createExercise } from "@/modules/exercise/data";
 import { ExerciseItem } from "@/modules/exercise/types";
@@ -7,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { nanoid } from "nanoid";
 
 export async function action({ request }: { request: Request }) {
   const formData = await request.formData();
