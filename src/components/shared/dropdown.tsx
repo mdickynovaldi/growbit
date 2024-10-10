@@ -21,9 +21,11 @@ export function Dropdown(props: DropdownProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className=" bg-slate-500 rounded">
         <div className=" w-full rounded">
-          <DropdownMenuItem>
-            <Edit className="mr-2 h-4 w-4" />
-            <Link to={`/edit/${props.exerciseId}`}>Edit</Link>
+          <DropdownMenuItem asChild>
+            <Link to={`/edit/${props.exerciseId}`} className="cursor-pointer">
+              <Edit className="mr-2 h-4 w-4" />
+              <span>Edit</span>
+            </Link>
           </DropdownMenuItem>
         </div>
       </DropdownMenuContent>

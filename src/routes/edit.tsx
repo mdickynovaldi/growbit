@@ -33,7 +33,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const updates: ExerciseItem = {
     id: params.id,
-    title: formData.get("exercise-name") as string,
+    title: String(formData.get("title")),
     calories: Number(formData.get("exercise-calories")),
     createdAt: Date.now(),
   };
@@ -47,23 +47,26 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
 export function EditExercise() {
   const { exercise } = useLoaderData() as { exercise: ExerciseItem };
+
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
 
   return (
     <Card className="w-full max-w-md mx-auto my-10 md:my-10">
       <CardHeader>
-        <CardTitle className="text-white text-center">Edit Exercise</CardTitle>
+        <CardTitle className="text-white text-center">
+          Update Exercise
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Form method="post">
-            <Label htmlFor="exercise-name" className="text-white">
-              Exercise
+            <Label htmlFor="title" className="text-white">
+              Title
             </Label>
             <Input
-              id="exercise-name"
-              name="exercise-name"
+              id="title"
+              name="title"
               placeholder="What exercise do you want to do today?"
               className="text-white rounded"
               defaultValue={exercise.title}
@@ -82,12 +85,12 @@ export function EditExercise() {
             {isSubmitting ? (
               <div className="flex gap-2 ">
                 <Button type="submit" disabled={isSubmitting}>
-                  Adding...
+                  Update...
                 </Button>
               </div>
             ) : (
               <div className="flex gap-2 ">
-                <Button type="submit">Add</Button>
+                <Button type="submit">Update</Button>
                 <Link to="/">
                   <Button variant="cancel">Cancel</Button>
                 </Link>

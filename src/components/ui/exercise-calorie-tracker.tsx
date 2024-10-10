@@ -30,11 +30,11 @@ export function ExerciseCalorieTracker() {
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <form>
-            <Label className="text-white" htmlFor="exercise-name">
+            <Label className="text-white" htmlFor="title">
               Exercise
             </Label>
             <Input
-              id="exercise-name"
+              id="title"
               placeholder="What exercise do you want to do today?"
               value={name}
               className="text-white rounded"

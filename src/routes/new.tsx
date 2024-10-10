@@ -1,6 +1,7 @@
 import {
   ActionFunctionArgs,
   Link,
+  useFetcher,
   redirect,
   useNavigation,
 } from "react-router-dom";
@@ -45,13 +46,34 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export function NewExercise() {
+  const fetcher = useFetcher();
+
   const form = useForm<ExerciseFormType>({
     resolver: zodResolver(ExerciseFormSchema),
+    defaultValues: {
+      title: "",
+      calories: 0,
+    },
   });
-  const { control } = form;
+  const { handleSubmit, control } = form;
 
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
+
+  const onSubmit = handleSubmit(async (data) => {
+    const exerciseItemData: ExerciseItem = {
+      id: nanoid(),
+      title: data.title,
+      calories: Number(data.calories),
+      createdAt: Date.now(),
+    };
+    if (!exerciseItemData) return null;
+
+    fetcher.submit(exerciseItemData, {
+      method: "post",
+      action: "/new",
+    });
+  });
 
   return (
     <Card className="w-full max-w-md mx-auto my-10 md:my-10">
@@ -62,7 +84,7 @@ export function NewExercise() {
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Form {...form}>
-            <div className="space-y-4">
+            <form onSubmit={onSubmit} className="space-y-4">
               <FormField
                 control={control}
                 name="title"
@@ -87,7 +109,13 @@ export function NewExercise() {
                     <FormItem>
                       <FormLabel>Calories</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} />
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -103,7 +131,7 @@ export function NewExercise() {
                   <Link to="/">Cancel</Link>
                 </Button>
               </div>
-            </div>
+            </form>
           </Form>
         </div>
       </CardContent>

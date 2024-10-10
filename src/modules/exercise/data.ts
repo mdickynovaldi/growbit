@@ -5,15 +5,19 @@ export const initialExerciseItems: ExerciseItem[] = [];
 
 export async function getExercises() {
   await fakeNetwork();
+
   let exercises: ExerciseItem[] =
     (await localforage.getItem("exercises")) || [];
+
   return exercises;
 }
 
 export async function getCalories() {
   await fakeNetwork();
+
   let calories: number = (await localforage.getItem("calories")) || 0;
   let totalCalories = calories / 10;
+
   return totalCalories;
 }
 
@@ -26,9 +30,12 @@ export async function createExercise(updates: ExerciseItem) {
     calories: updates.calories,
     createdAt: updates.createdAt,
   };
+
   let exercises = await getExercises();
   exercises.unshift(exercise);
+
   await set(exercises);
+
   return exercise;
 }
 
@@ -89,6 +96,6 @@ async function fakeNetwork(key?: string): Promise<void> {
 
   fakeCache[key as string] = true;
   return new Promise((res) => {
-    setTimeout(res, Math.random() * 800);
+    setTimeout(res, Math.random() * 100);
   });
 }
