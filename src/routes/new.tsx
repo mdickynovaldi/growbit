@@ -1,35 +1,58 @@
-import { Form, Link, redirect, useNavigation } from "react-router-dom";
+import { Link, useNavigation } from "react-router-dom";
 import { nanoid } from "nanoid";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { createExercise } from "@/modules/exercise/data";
 import { ExerciseItem } from "@/modules/exercise/types";
 
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { Form } from "@/components/ui/form";
+
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 
-export async function action({ request }: { request: Request }) {
-  const formData = await request.formData();
-  let calories = Number(formData.get("exercise-calories"));
-  if (calories > 1000) {
-    calories = 1000;
-  } else if (calories < 0) {
-    calories = 0;
-  }
-  const updates: ExerciseItem = {
-    id: nanoid(),
-    title: formData.get("exercise-name") as string,
-    calories: calories,
-    createdAt: Date.now(),
-  };
-  await createExercise(updates);
-  return redirect("/");
-}
+type ExerciseForm = z.infer<typeof ExerciseFormSchema>;
+
+const ExerciseFormSchema = z.object({
+  exercise: z
+    .string()
+    .min(1, "Exercise is required")
+    .max(10, "Exercise maximal 10 characters"),
+  calories: z
+    .number()
+    .min(0, "Calories is required")
+    .max(1000, "Calories maximal 1000"),
+});
 
 export function New() {
+  const form = useForm<ExerciseForm>({
+    resolver: zodResolver(ExerciseFormSchema),
+  });
+
+  const { handleSubmit, control, reset } = form;
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
+
+  const onSubmit = handleSubmit(async (data) => {
+    const updates: ExerciseItem = {
+      id: nanoid(),
+      title: data.exercise,
+      calories: Number(data.calories), // Konversi string ke number
+      createdAt: Date.now(),
+    };
+    await createExercise(updates);
+    reset();
+    window.location.href = "/";
+  });
   return (
     <Card className="w-full max-w-md mx-auto my-10 md:my-10">
       <CardHeader>
@@ -37,40 +60,51 @@ export function New() {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Form method="post">
-            <Label htmlFor="exercise-name" className="text-white">
-              Exercise
-            </Label>
-            <Input
-              id="exercise-name"
-              name="exercise-name"
-              placeholder="What exercise do you want to do today?"
-              className="text-white rounded"
-            />
-            <Label htmlFor="exercise-calories" className="text-white mt-4">
-              Calorie
-            </Label>
-            <Input
-              id="exercise-calories"
-              name="exercise-calories"
-              type="number"
-              placeholder="How many calories do you want to burn?"
-              className="text-white rounded mt-2 mb-4"
-            />
-            {isSubmitting ? (
-              <div className="flex gap-2 ">
-                <Button type="submit" disabled={isSubmitting}>
-                  Adding...
-                </Button>
-              </div>
-            ) : (
-              <div className="flex gap-2 ">
-                <Button type="submit">Add</Button>
-                <Link to="/">
-                  <Button variant="cancel">Cancel</Button>
-                </Link>
-              </div>
-            )}
+          <Form {...form}>
+            <form onSubmit={onSubmit} className="space-y-4">
+              <FormField
+                control={control}
+                name="exercise"
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormLabel>Exercise</FormLabel>
+                      <FormControl>
+                        <Input type="text" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+              <FormField
+                control={control}
+                name="calories"
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormLabel>Calories</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Submitting..." : "Submit"}
+              </Button>
+              <Button type="button" variant="destructive" className="ml-2">
+                <Link to="/">Cancel</Link>
+              </Button>
+            </form>
           </Form>
         </div>
       </CardContent>

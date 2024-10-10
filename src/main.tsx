@@ -12,7 +12,7 @@ import {
 import { loader as editLoader } from "@/modules/exercise/data";
 import { action as destroyAction } from "@/routes/destroy";
 import { NotFound } from "@/routes/404";
-import { New, action as newAction } from "@/routes/new";
+import { New } from "@/routes/new";
 import { Edit, action as editAction } from "@/routes/edit";
 import { loader as rootLoader, Root } from "@/routes/root";
 import { Home } from "@/routes/home";
@@ -32,7 +32,6 @@ const router = createBrowserRouter([
       {
         path: "new",
         element: <New />,
-        action: newAction,
       },
       {
         path: "edit/:id",
