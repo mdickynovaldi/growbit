@@ -1,14 +1,13 @@
 import { Outlet } from "react-router-dom";
-import { getCalories, getExercises } from "@/modules/exercise/data";
 
 export async function loader() {
-  const exercises = await getExercises();
-  const totalCalories = await getCalories();
-  return { exercises, totalCalories };
+  // Logged in / authenticated user
+  return null;
 }
-export function Root() {
+
+export function RootRoute() {
   return (
-    <main className="w-1/2 mx-auto">
+    <main className="max-w-2xl w-full mx-auto">
       <Outlet />
     </main>
   );

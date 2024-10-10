@@ -1,7 +1,11 @@
-import { Link, useNavigation } from "react-router-dom";
+import {
+  ActionFunctionArgs,
+  Link,
+  redirect,
+  useNavigation,
+} from "react-router-dom";
 import { nanoid } from "nanoid";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { createExercise } from "@/modules/exercise/data";
@@ -19,52 +23,49 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
+import {
+  ExerciseFormSchema,
+  type ExerciseFormType,
+} from "@/modules/exercise/schema";
 
-type ExerciseForm = z.infer<typeof ExerciseFormSchema>;
+export async function action({ request }: ActionFunctionArgs) {
+  const formData = await request.formData();
 
-const ExerciseFormSchema = z.object({
-  exercise: z
-    .string()
-    .min(1, "Exercise is required")
-    .max(10, "Exercise maximal 10 characters"),
-  calories: z
-    .number()
-    .min(0, "Calories is required")
-    .max(1000, "Calories maximal 1000"),
-});
+  const newExerciseItem: ExerciseItem = {
+    id: nanoid(),
+    title: String(formData.get("title")),
+    calories: Number(formData.get("calories")),
+    createdAt: Date.now(),
+  };
 
-export function New() {
-  const form = useForm<ExerciseForm>({
+  const exercise = createExercise(newExerciseItem);
+  if (!exercise) return new Response("Cannot create exercise", { status: 500 });
+
+  return redirect("/");
+}
+
+export function NewExercise() {
+  const form = useForm<ExerciseFormType>({
     resolver: zodResolver(ExerciseFormSchema),
   });
+  const { control } = form;
 
-  const { handleSubmit, control, reset } = form;
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
 
-  const onSubmit = handleSubmit(async (data) => {
-    const updates: ExerciseItem = {
-      id: nanoid(),
-      title: data.exercise,
-      calories: Number(data.calories), // Konversi string ke number
-      createdAt: Date.now(),
-    };
-    await createExercise(updates);
-    reset();
-    window.location.href = "/";
-  });
   return (
     <Card className="w-full max-w-md mx-auto my-10 md:my-10">
       <CardHeader>
         <CardTitle className="text-white text-center">New Exercise</CardTitle>
       </CardHeader>
+
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Form {...form}>
-            <form onSubmit={onSubmit} className="space-y-4">
+            <div className="space-y-4">
               <FormField
                 control={control}
-                name="exercise"
+                name="title"
                 render={({ field }) => {
                   return (
                     <FormItem>
@@ -77,6 +78,7 @@ export function New() {
                   );
                 }}
               />
+
               <FormField
                 control={control}
                 name="calories"
@@ -85,26 +87,23 @@ export function New() {
                     <FormItem>
                       <FormLabel>Calories</FormLabel>
                       <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(Number(e.target.value))
-                          }
-                        />
+                        <Input type="number" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   );
                 }}
               />
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit"}
-              </Button>
-              <Button type="button" variant="destructive" className="ml-2">
-                <Link to="/">Cancel</Link>
-              </Button>
-            </form>
+
+              <div className="flex gap-2">
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? "Submitting..." : "Submit"}
+                </Button>
+                <Button asChild type="button" variant="destructive">
+                  <Link to="/">Cancel</Link>
+                </Button>
+              </div>
+            </div>
           </Form>
         </div>
       </CardContent>

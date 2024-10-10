@@ -66,11 +66,6 @@ export async function deleteExercise(id: string) {
   return false;
 }
 
-export async function loader({ params }: { params: { id: string } }) {
-  const exercise = await getExercise(params.id);
-  return { exercise };
-}
-
 function set(exercises: ExerciseItem[]) {
   return localforage.setItem("exercises", exercises);
 }

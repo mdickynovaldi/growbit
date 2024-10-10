@@ -2,17 +2,18 @@ import { Button } from "@/components/ui/button";
 import { ExerciseItemCard } from "@/components/shared/exercise-item-card";
 import { Progress } from "@/components/ui/progress";
 
-import { useLoaderData, Link } from "react-router-dom";
-import { ExerciseItem } from "@/modules/exercise/types";
+import { Link } from "react-router-dom";
 import { nanoid } from "nanoid";
 
-/**
- * Component
- */
-export function TrackerList() {
-  const { exercises } = useLoaderData() as { exercises: ExerciseItem[] };
-  const { totalCalories } = useLoaderData() as { totalCalories: number };
+import { ExerciseItem } from "@/modules/exercise/types";
 
+export function TrackerList({
+  exercises,
+  totalCalories,
+}: {
+  exercises: ExerciseItem[];
+  totalCalories: number;
+}) {
   const isGoalAchieved = totalCalories >= 100;
 
   return (

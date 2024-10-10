@@ -1,47 +1,51 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+import { RootRoute } from "@/routes/root";
+import { NotFound } from "@/routes/404";
+import { HomeRoute, loader as homeLoader } from "@/routes/home";
+import { NewExercise, action as newExerciseAction } from "@/routes/new";
+import {
+  EditExercise,
+  loader as editLoader,
+  action as editAction,
+} from "@/routes/edit";
+import { action as destroyAction } from "@/routes/destroy";
 
 import "./index.css";
-
-import {
-  ActionFunction,
-  createBrowserRouter,
-  LoaderFunction,
-  RouterProvider,
-} from "react-router-dom";
-import { loader as editLoader } from "@/modules/exercise/data";
-import { action as destroyAction } from "@/routes/destroy";
-import { NotFound } from "@/routes/404";
-import { New } from "@/routes/new";
-import { Edit, action as editAction } from "@/routes/edit";
-import { loader as rootLoader, Root } from "@/routes/root";
-import { Home } from "@/routes/home";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
+    element: <RootRoute />,
     errorElement: <NotFound />,
-
     children: [
       {
         path: "/",
-        element: <Home />,
-        loader: rootLoader,
+        element: <HomeRoute />,
+        loader: homeLoader,
       },
       {
-        path: "new",
-        element: <New />,
+        path: "/new",
+        element: <NewExercise />,
+        action: newExerciseAction,
+      },
+      // TODO
+      // {
+      //   path: "/exercises/:id",
+      //   element: <ViewExercise />,
+      // },
+      {
+        path: "/edit/:id",
+        element: <EditExercise />,
+        loader: editLoader,
+        action: editAction,
       },
       {
-        path: "edit/:id",
-        element: <Edit />,
-        loader: editLoader as unknown as LoaderFunction,
-        action: editAction as unknown as ActionFunction,
-      },
-      {
-        path: "destroy/:id",
-        action: destroyAction as unknown as ActionFunction,
+        // ALTERNATIVE: path: "/exercises/:id/destroy",
+        path: "/destroy/:id",
+        action: destroyAction,
       },
     ],
   },
