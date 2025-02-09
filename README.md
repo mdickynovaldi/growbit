@@ -2,4 +2,4 @@
 
 Exercise tracker with calories.
 
-Live Demo: <https://growbit.vercel.app>
+Live Demo: <https://growbit.mdickynovaldi.com/>
